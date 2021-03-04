@@ -9,9 +9,9 @@ import (
 	"flag"
 	"fmt"
 	"go/format"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -187,7 +187,7 @@ func main() {
 	}
 
 	outputPath := filepath.Join(dir, *outputFile)
-	if err := ioutil.WriteFile(outputPath, src, 0644); err != nil {
+	if err := os.WriteFile(outputPath, src, 0644); err != nil {
 		log.Fatalf("Writing output: %s", err)
 	} // #nosec G306
 }

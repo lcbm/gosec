@@ -43,7 +43,7 @@ func (t *badTempFile) Match(n ast.Node, c *gosec.Context) (gi *gosec.Issue, err 
 // NewBadTempFile detects direct writes to predictable path in temporary directory
 func NewBadTempFile(id string, conf gosec.Config) (gosec.Rule, []ast.Node) {
 	calls := gosec.NewCallList()
-	calls.Add("io/ioutil", "WriteFile")
+	calls.Add("os", "WriteFile")
 	calls.Add("os", "Create")
 	return &badTempFile{
 		calls: calls,

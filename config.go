@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 )
 
 const (
@@ -58,7 +57,7 @@ func (c Config) convertGlobals() {
 // should be used with io.Reader to load configuration from
 //file or from string etc.
 func (c Config) ReadFrom(r io.Reader) (int64, error) {
-	data, err := ioutil.ReadAll(r)
+	data, err := io.ReadAll(r)
 	if err != nil {
 		return int64(len(data)), err
 	}

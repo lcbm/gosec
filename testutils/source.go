@@ -217,7 +217,6 @@ func main() {
 }`}, 0, gosec.NewConfig()}, {[]string{`
 package main
 import (
-	"io/ioutil"
 	"os"
 	"fmt"
 )
@@ -226,7 +225,7 @@ func a() error {
 }
 func b() {
 	fmt.Println("b")
-	ioutil.WriteFile("foo.txt", []byte("bar"), os.ModeExclusive)
+	os.WriteFile("foo.txt", []byte("bar"), os.ModeExclusive)
 }
 func c() string {
 	return fmt.Sprintf("This isn't anything")
@@ -279,17 +278,16 @@ func main() {
 `}, 0, gosec.NewConfig()}, {[]string{`
 package main
 import (
-	"io/ioutil"
 	"os"
 	"fmt"
 )
 func a() {
 	fmt.Println("a")
-	ioutil.WriteFile("foo.txt", []byte("bar"), os.ModeExclusive)
+	os.WriteFile("foo.txt", []byte("bar"), os.ModeExclusive)
 }
 func main() {
 	a()
-}`}, 0, gosec.Config{"G104": map[string]interface{}{"ioutil": []interface{}{"WriteFile"}}}}, {[]string{`
+}`}, 0, gosec.Config{"G104": map[string]interface{}{"os": []interface{}{"WriteFile"}}}}, {[]string{`
 package main
 
 import (
@@ -330,7 +328,6 @@ func main() {
 }`}, 1, gosec.Config{gosec.Globals: map[gosec.GlobalOption]string{gosec.Audit: "enabled"}}}, {[]string{`
 package main
 import (
-	"io/ioutil"
 	"os"
 	"fmt"
 )
@@ -339,7 +336,7 @@ func a() error {
 }
 func b() {
 	fmt.Println("b")
-	ioutil.WriteFile("foo.txt", []byte("bar"), os.ModeExclusive)
+	os.WriteFile("foo.txt", []byte("bar"), os.ModeExclusive)
 }
 func c() string {
 	return fmt.Sprintf("This isn't anything")
@@ -390,7 +387,7 @@ func main() {
 package main
 import (
 	"net/http"
-	"io/ioutil"
+	"io"
 	"fmt"
 	"os"
 	"bufio"
@@ -406,7 +403,7 @@ func main() {
 		panic(err)
 	}
   	defer resp.Body.Close()
-  	body, err := ioutil.ReadAll(resp.Body)
+  	body, err := io.ReadAll(resp.Body)
   	if err != nil {
     		panic(err)
   	}
@@ -418,7 +415,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -430,7 +427,7 @@ func main() {
 		panic(err)
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		panic(err)
 	}
@@ -440,7 +437,7 @@ func main() {
 package main
 import (
 	"net/http"
-	"io/ioutil"
+	"io"
 	"fmt"
 	"os"
 )
@@ -451,7 +448,7 @@ func main() {
 		panic(err)
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 			panic(err)
 	}
@@ -1453,11 +1450,11 @@ package samples
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 )
 
 func main() {
-	err := ioutil.WriteFile("/tmp/demo2", []byte("This is some data"), 0644)
+	err := os.WriteFile("/tmp/demo2", []byte("This is some data"), 0644)
 	if err != nil {
 		fmt.Println("Error while writing!")
 	}
@@ -1468,12 +1465,11 @@ func main() {
 package main
 import (
 "os"
-"io/ioutil"
 "log"
 )
 func main() {
 	f := os.Getenv("tainted_file")
-	body, err := ioutil.ReadFile(f)
+	body, err := os.ReadFile(f)
 	if err != nil {
 	log.Printf("Error: %v\n", err)
 	}
@@ -1533,12 +1529,11 @@ package main
 import (
 	"log"
 	"os"
-	"io/ioutil"
 )
 
 	func main() {
 		f2 := os.Getenv("tainted_file2")
-		body, err := ioutil.ReadFile("/tmp/" + f2)
+		body, err := os.ReadFile("/tmp/" + f2)
 		if err != nil {
 		log.Printf("Error: %v\n", err)
 	  }
@@ -1573,7 +1568,6 @@ package main
 import (
 	"log"
 	"os"
-	"io/ioutil"
 	"path/filepath"
 )
 
@@ -1581,7 +1575,7 @@ func main() {
 	dir := os.Getenv("server_root")
 	f3 := os.Getenv("tainted_file3")
 	// edge case where both a binary expression and file Join are used.
-	body, err := ioutil.ReadFile(filepath.Join("/var/"+dir, f3))
+	body, err := os.ReadFile(filepath.Join("/var/"+dir, f3))
 	if err != nil {
 		log.Printf("Error: %v\n", err)
 	}
@@ -1814,7 +1808,6 @@ func extractFile(f *tar.Header, tr *tar.Reader, destPath string) error {
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
 	"os"
 )
 
@@ -1827,10 +1820,10 @@ func check(e error) {
 func main() {
 
 	d1 := []byte("hello\ngo\n")
-	err := ioutil.WriteFile("/tmp/dat1", d1, 0744)
+	err := os.WriteFile("/tmp/dat1", d1, 0744)
 	check(err)
 
-	allowed := ioutil.WriteFile("/tmp/dat1", d1, 0600)
+	allowed := os.WriteFile("/tmp/dat1", d1, 0600)
 	check(allowed)
 
 	f, err := os.Create("/tmp/dat2")
@@ -1863,7 +1856,6 @@ func main() {
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
 	"os"
 )
 
@@ -1876,10 +1868,10 @@ func check(e error) {
 func main() {
 
 	d1 := []byte("hello\ngo\n")
-	err := ioutil.WriteFile("/tmp/dat1", d1, 0744)
+	err := os.WriteFile("/tmp/dat1", d1, 0744)
 	check(err)
 
-	allowed := ioutil.WriteFile("/tmp/dat1", d1, 0600)
+	allowed := os.WriteFile("/tmp/dat1", d1, 0600)
 	check(allowed)
 
 	f, err := os.Create("/tmp/dat2")
